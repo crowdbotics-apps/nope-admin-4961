@@ -80,7 +80,8 @@ export const getClientById = clientId =>
         id: snapshot.data().id,
         name: snapshot.data().name || "",
         email: snapshot.data().email || "",
-        phone: snapshot.data().phone || ""
+        phone: snapshot.data().phone || "",
+        status: snapshot.data().status || false
       };
 
       resolve(clientData);

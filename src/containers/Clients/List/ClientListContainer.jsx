@@ -39,8 +39,6 @@ class ClientListContainer extends React.Component {
     this.context.showLoading();
 
     let data = await ClientController.getClients();
-    console.log(data);
-    console.log(this.state.filter);
     data = data
       .filter(client =>
         (client[this.state.filter] || "")
@@ -57,9 +55,9 @@ class ClientListContainer extends React.Component {
     this.context.hideLoading();
   };
 
-  addClicked = () => {
-    this.props.history.push("/clients/add");
-  };
+  // addClicked = () => {
+  //   this.props.history.push("/clients/add");
+  // };
 
   editClicked = clientId => () => {
     this.props.history.push(`/users/edit/${clientId}`);
@@ -108,7 +106,6 @@ class ClientListContainer extends React.Component {
   };
 
   sortBy(key) {
-    console.log(key);
     let { data } = this.state;
     data = _.orderBy(data, key);
     this.setState({ data });
