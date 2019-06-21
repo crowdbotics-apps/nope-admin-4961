@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Router from './router';
+import { AppContext, LoadingView } from './components';
+
+import './App.scss';
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.showLoading = () => {
+      this.setState({
+        loading: true
+      });
+    };
+    this.hideLoading = () => {
+      this.setState({
+        loading: false
+      });
+    };
+    this.state = {
+      loading: false,
+      showLoading: this.showLoading,
+      hideLoading: this.hideLoading
+    };
+  }
+
+  render() {
+    return (
+      <AppContext.Provider value={this.state}>
+        <div className='App'>
+          <Router />
+        </div>
+        <LoadingView />
+      </AppContext.Provider>
+    );
+  }
 }
 
 export default App;
