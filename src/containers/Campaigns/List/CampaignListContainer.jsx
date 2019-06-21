@@ -5,17 +5,18 @@ import { AppContext } from "components";
 import { CampaignController } from "controllers";
 import styles from "./CampaignListContainer.module.scss";
 
+var _ = require("lodash");
 class CampaignListContainer extends React.Component {
   constructor(props) {
     super(props);
 
     this.columns = [
-      "No",
-      "Phone Number",
-      "Number of Calls",
-      "Number of blacklists",
-      "Blacklisted",
-      "Actions"
+      { title: "No", key: "" },
+      { title: "Phone Number", key: "phone" },
+      { title: "Number of Calls", key: "calls" },
+      { title: "Number of blacklists", key: "block" },
+      { title: "Blacklisted", key: "" },
+      { title: "Actions", key: "" }
     ];
 
     this.state = {
@@ -93,6 +94,15 @@ class CampaignListContainer extends React.Component {
     }
   };
 
+  sortBy(key) {
+    console.log(key);
+    if (key !== "") {
+      let { data } = this.state;
+      data = _.orderBy(data, key);
+      this.setState({ data });
+    }
+  }
+
   render() {
     return (
       <div className={styles.wrapper}>
@@ -119,7 +129,9 @@ class CampaignListContainer extends React.Component {
             <thead>
               <tr className={styles.header}>
                 {this.columns.map(item => (
-                  <th key={item}>{item}</th>
+                  <th key={item.title} onClick={() => this.sortBy(item.key)}>
+                    {item.title}
+                  </th>
                 ))}
               </tr>
             </thead>

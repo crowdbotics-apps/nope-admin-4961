@@ -5,13 +5,18 @@ import { AppContext } from "components";
 import { ClientController } from "controllers";
 import styles from "./ClientListContainer.module.scss";
 
+var _ = require("lodash");
 class ClientListContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.columns = ["No", "Name", "Email", "Phone Number", "Actions"];
-
-    // this.columns = ['No', 'Name', 'Email', 'Phone Number'];
+    this.columns = [
+      { title: "No", key: "" },
+      { title: "Name", key: "name" },
+      { title: "Email", key: "email" },
+      { title: "Phone Number", key: "phone" },
+      { title: "Actions", key: "" }
+    ];
 
     this.state = {
       data: [],
@@ -96,6 +101,13 @@ class ClientListContainer extends React.Component {
     }
   };
 
+  sortBy(key) {
+    console.log(key);
+    let { data } = this.state;
+    data = _.orderBy(data, key);
+    this.setState({ data });
+  }
+
   render() {
     return (
       <div className={styles.wrapper}>
@@ -161,7 +173,9 @@ class ClientListContainer extends React.Component {
             <thead>
               <tr className={styles.header}>
                 {this.columns.map(item => (
-                  <th key={item}>{item}</th>
+                  <th key={item.title} onClick={() => this.sortBy(item.key)}>
+                    {item.title}
+                  </th>
                 ))}
               </tr>
             </thead>
