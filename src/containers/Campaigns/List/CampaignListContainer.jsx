@@ -1,29 +1,27 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { AppContext } from 'components';
-import { CampaignController } from 'controllers';
-import styles from './CampaignListContainer.module.scss';
+import { AppContext } from "components";
+import { CampaignController } from "controllers";
+import styles from "./CampaignListContainer.module.scss";
 
 class CampaignListContainer extends React.Component {
   constructor(props) {
     super(props);
 
     this.columns = [
-      'No',
-      'Name',
-      'Organization',
-      'Status',
-      'Participants',
-      'Division / Location',
-      'Group',
-      'Actions'
+      "No",
+      "Phone Number",
+      "Number of Calls",
+      "Number of blacklists",
+      "Blacklisted",
+      "Actions"
     ];
 
     this.state = {
       data: [],
-      filter: 'name',
-      keyword: ''
+      filter: "phone",
+      keyword: ""
     };
   }
 
@@ -35,17 +33,11 @@ class CampaignListContainer extends React.Component {
     this.context.showLoading();
 
     let data = await CampaignController.getCampaigns();
-    if (this.state.filter === 'name') {
-      data = data.filter(campaign =>
-        campaign.name.toLowerCase().includes(this.state.keyword.toLowerCase())
-      );
-    } else {
-      data = data.filter(campaign =>
-        campaign.client.org
-          .toLowerCase()
-          .includes(this.state.keyword.toLowerCase())
-      );
-    }
+    console.log(data);
+
+    data = data.filter(campaign =>
+      campaign.phone.toLowerCase().includes(this.state.keyword.toLowerCase())
+    );
     this.setState({
       data
     });
@@ -60,7 +52,7 @@ class CampaignListContainer extends React.Component {
   };
 
   addClicked = () => {
-    this.props.history.push('/campaigns/add');
+    this.props.history.push("/campaigns/add");
   };
 
   editClicked = campaignId => () => {
@@ -68,14 +60,14 @@ class CampaignListContainer extends React.Component {
   };
 
   activateClicked = id => async () => {
-    if (window.confirm('Do you want to activate this campaign?')) {
+    if (window.confirm("Do you want to activate this campaign?")) {
       await CampaignController.activateCampaign(id);
       await this.reload();
     }
   };
 
   deactivateClicked = id => async () => {
-    if (window.confirm('Do you want to deactivate this campaign?')) {
+    if (window.confirm("Do you want to deactivate this campaign?")) {
       await CampaignController.deactivateCampaign(id);
       await this.reload();
     }
@@ -109,38 +101,12 @@ class CampaignListContainer extends React.Component {
             <div className={styles.searchbar}>
               <i className={`fa fa-search ${styles.iconSearch}`} />
               <input
-                type='text'
-                placeholder='Type here and press enter to get the result...'
+                type="text"
+                placeholder="Type here and press enter to get the result..."
                 value={this.state.keyword}
                 onChange={this.searchInputChanged}
                 onKeyPress={this.searchInputKeyPressed}
               />
-            </div>
-            <div className={styles.searchfilters}>
-              <div
-                className={styles.filter}
-                onClick={this.searchfilterChanged('name')}
-              >
-                <input
-                  type='checkbox'
-                  value='name'
-                  checked={this.state.filter === 'name'}
-                  onChange={this.searchfilterChanged('name')}
-                />
-                Search by name
-              </div>
-              <div
-                className={styles.filter}
-                onClick={this.searchfilterChanged('org')}
-              >
-                <input
-                  type='checkbox'
-                  value='org'
-                  checked={this.state.filter === 'org'}
-                  onChange={this.searchfilterChanged('org')}
-                />
-                Search by organization
-              </div>
             </div>
           </div>
           <div className={styles.btnAdd} onClick={this.addClicked}>
@@ -161,12 +127,10 @@ class CampaignListContainer extends React.Component {
               {this.state.data.map((item, index) => (
                 <tr key={item.id}>
                   <td>{`${index + 1}`}</td>
-                  <td>{item.name}</td>
-                  <td>{item.client.org}</td>
-                  <td>{item.status ? 'Active' : 'Inactive'}</td>
-                  <td>{item.participant_group.participant_list.length}</td>
-                  <td>{item.participant_group.division}</td>
-                  <td>{item.participant_group.name}</td>
+                  <td>{item.phone}</td>
+                  <td>{item.calls}</td>
+                  <td>{item.blocks.length}</td>
+                  <td>{item.blocks.length >= 10 ? "Yes" : "No"}</td>
                   <td>
                     <span onClick={this.editClicked(item.id)}>
                       <i

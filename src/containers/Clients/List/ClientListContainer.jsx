@@ -9,9 +9,9 @@ class ClientListContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    // this.columns = ["No", "Name", "Email", "Phone Number", "Actions"];
+    this.columns = ["No", "Name", "Email", "Phone Number", "Actions"];
 
-    this.columns = ["No", "Name", "Email", "Phone Number"];
+    // this.columns = ['No', 'Name', 'Email', 'Phone Number'];
 
     this.state = {
       data: [],
@@ -48,7 +48,7 @@ class ClientListContainer extends React.Component {
   };
 
   editClicked = clientId => () => {
-    this.props.history.push(`/clients/edit/${clientId}`);
+    this.props.history.push(`/users/edit/${clientId}`);
   };
 
   deactivateClicked = clientId => async () => {
@@ -122,7 +122,7 @@ class ClientListContainer extends React.Component {
                   <td>{item.name}</td>
                   <td>{item.email}</td>
                   <td>{item.phone}</td>
-                  {/* <td>
+                  <td>
                     <span onClick={this.editClicked(item.id)}>
                       <i
                         className={`fa fa-pencil-square-o ${styles.iconPencil}`}
@@ -137,7 +137,7 @@ class ClientListContainer extends React.Component {
                         <i className={`fa fa-refresh ${styles.iconRefresh}`} />
                       </span>
                     )}
-                  </td> */}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -12,15 +12,6 @@ import CampaignListContainer from "containers/Campaigns/List";
 import CampaignAddContainer from "containers/Campaigns/Add";
 import CampaignEditContainer from "containers/Campaigns/Edit";
 
-// campaign details
-import CampaignReportContainer from "containers/CampaignReport/List";
-
-//report
-import ReportContainer from "containers/Report";
-
-//participants
-import ParticipantListContainer from "containers/Participants/List";
-
 import styles from "./Router.module.scss";
 
 class Router extends React.Component {
@@ -28,15 +19,8 @@ class Router extends React.Component {
     let selectedMenuItem = 0;
     if (window.location.pathname.startsWith("/users")) {
       selectedMenuItem = 0;
-    } else if (window.location.pathname.startsWith("/campaigns")) {
+    } else if (window.location.pathname.startsWith("/block-numbers")) {
       selectedMenuItem = 1;
-    } else if (
-      window.location.pathname.startsWith("/report") ||
-      window.location.pathname.startsWith("/campaign-report")
-    ) {
-      selectedMenuItem = 2;
-    } else if (window.location.pathname.startsWith("/participants")) {
-      selectedMenuItem = 3;
     } else {
       selectedMenuItem = 0; // default
     }
@@ -55,31 +39,13 @@ class Router extends React.Component {
               Users
             </Link>
             <Link
-              to="/campaigns"
+              to="/block-numbers"
               className={cn(
                 styles.menuitem,
                 selectedMenuItem === 1 && styles["menuitem-selected"]
               )}
             >
-              Campaigns
-            </Link>
-            <Link
-              to="/report"
-              className={cn(
-                styles.menuitem,
-                selectedMenuItem === 2 && styles["menuitem-selected"]
-              )}
-            >
-              Reporting
-            </Link>
-            <Link
-              to="/participants"
-              className={cn(
-                styles.menuitem,
-                selectedMenuItem === 3 && styles["menuitem-selected"]
-              )}
-            >
-              Participants
+              Phone Numbers
             </Link>
           </div>
           <div className={styles.content}>
@@ -87,21 +53,16 @@ class Router extends React.Component {
               <Route path="/users/add" component={ClientAddContainer} />
               <Route path="/users/edit/:id" component={ClientEditContainer} />
               <Route path="/users" component={ClientListContainer} />
-              <Route path="/campaigns/add" component={CampaignAddContainer} />
               <Route
-                path="/campaigns/edit/:id"
+                path="/block-numbers/add"
+                component={CampaignAddContainer}
+              />
+              <Route
+                path="/block-numbers/edit/:id"
                 component={CampaignEditContainer}
               />
-              <Route path="/campaigns" component={CampaignListContainer} />
-              <Route path="/report" component={ReportContainer} />
-              <Route
-                path="/campaign-report/:id"
-                component={CampaignReportContainer}
-              />
-              <Route
-                path="/participants"
-                component={ParticipantListContainer}
-              />
+              <Route path="/block-numbers" component={CampaignListContainer} />
+
               <Redirect to="/users" />
             </Switch>
           </div>
