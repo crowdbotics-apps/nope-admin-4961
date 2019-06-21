@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import Pagination from "react-js-pagination";
 import { AppContext } from "components";
 import { CampaignController } from "controllers";
 import styles from "./CampaignListContainer.module.scss";
@@ -22,7 +22,9 @@ class CampaignListContainer extends React.Component {
     this.state = {
       data: [],
       filter: "phone",
-      keyword: ""
+      keyword: "",
+      activePage: 1,
+      itemPerPage: 10
     };
   }
 
@@ -103,6 +105,46 @@ class CampaignListContainer extends React.Component {
     }
   }
 
+  createRow() {
+    const { data } = this.state;
+    let children = [];
+    for (
+      var i = (this.state.activePage - 1) * this.state.itemPerPage;
+      i < this.state.activePage * this.state.itemPerPage;
+      i++
+    ) {
+      let item = data[i];
+      children.push(
+        _.isEmpty(item) ? null : (
+          <tr key={item.id}>
+            <td>{`${i + 1}`}</td>
+            <td>{item.phone}</td>
+            <td>{item.calls}</td>
+            <td>{item.blocks.length}</td>
+            <td>{item.blocks.length >= 10 ? "Yes" : "No"}</td>
+            <td>
+              {/* <span onClick={this.editClicked(item.id)}>
+                      <i
+                        className={`fa fa-pencil-square-o ${styles.iconPencil}`}
+                      />
+                    </span> */}
+              {item.blocks.length < 10 ? (
+                <span onClick={this.deactivateClicked(item.id)}>
+                  <i className={`fa fa-trash-o ${styles.iconTrash}`} />
+                </span>
+              ) : (
+                <span onClick={this.activateClicked(item.id)}>
+                  <i className={`fa fa-refresh ${styles.iconRefresh}`} />
+                </span>
+              )}
+            </td>
+          </tr>
+        )
+      );
+    }
+    return children;
+  }
+
   render() {
     return (
       <div className={styles.wrapper}>
@@ -119,50 +161,36 @@ class CampaignListContainer extends React.Component {
               />
             </div>
           </div>
-          <div className={styles.btnAdd} onClick={this.addClicked}>
+          {/* <div className={styles.btnAdd} onClick={this.addClicked}>
             <i className={`fa fa-plus ${styles.icon}`} />
             Add
-          </div>
+          </div> */}
         </div>
         {this.state.data.length ? (
-          <table>
-            <thead>
-              <tr className={styles.header}>
-                {this.columns.map(item => (
-                  <th key={item.title} onClick={() => this.sortBy(item.key)}>
-                    {item.title}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.data.map((item, index) => (
-                <tr key={item.id}>
-                  <td>{`${index + 1}`}</td>
-                  <td>{item.phone}</td>
-                  <td>{item.calls}</td>
-                  <td>{item.blocks.length}</td>
-                  <td>{item.blocks.length >= 10 ? "Yes" : "No"}</td>
-                  <td>
-                    {/* <span onClick={this.editClicked(item.id)}>
-                      <i
-                        className={`fa fa-pencil-square-o ${styles.iconPencil}`}
-                      />
-                    </span> */}
-                    {item.blocks.length < 10 ? (
-                      <span onClick={this.deactivateClicked(item.id)}>
-                        <i className={`fa fa-trash-o ${styles.iconTrash}`} />
-                      </span>
-                    ) : (
-                      <span onClick={this.activateClicked(item.id)}>
-                        <i className={`fa fa-refresh ${styles.iconRefresh}`} />
-                      </span>
-                    )}
-                  </td>
+          <div>
+            <table>
+              <thead>
+                <tr className={styles.header}>
+                  {this.columns.map(item => (
+                    <th key={item.title} onClick={() => this.sortBy(item.key)}>
+                      {item.title}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>{this.createRow()}</tbody>
+            </table>
+            <div className={styles.bottom}>
+              <Pagination
+                activePage={this.state.activePage}
+                itemsCountPerPage={this.state.itemPerPage}
+                totalItemsCount={this.state.data.length}
+                onChange={pageNumber => this.handlePageChange(pageNumber)}
+                innerClass={styles.pagination}
+                activeClass={styles.activeItem}
+              />
+            </div>
+          </div>
         ) : (
           <h3>No Search Result</h3>
         )}

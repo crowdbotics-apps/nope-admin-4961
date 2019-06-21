@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Papa from 'papaparse';
-import uuid from 'uuid/v4';
+import React from "react";
+import PropTypes from "prop-types";
+import Papa from "papaparse";
+import uuid from "uuid/v4";
 
-import { AppContext } from 'components';
-import { ClientController } from 'controllers';
+import { AppContext } from "components";
+import { ClientController } from "controllers";
 
-import styles from './ClientAddContainer.module.scss';
+import styles from "./ClientAddContainer.module.scss";
 
 class ClientAddContainer extends React.Component {
   constructor(props) {
@@ -14,8 +14,8 @@ class ClientAddContainer extends React.Component {
 
     this.state = {
       basic: {
-        org: '',
-        contact: ''
+        org: "",
+        contact: ""
       },
       groups: [this.generateNewGroup()]
     };
@@ -26,8 +26,8 @@ class ClientAddContainer extends React.Component {
   generateNewGroup = () => {
     return {
       id: uuid(),
-      name: '',
-      division: '',
+      name: "",
+      division: "",
       number_of_participants: 0,
       participant_list: []
     };
@@ -37,7 +37,7 @@ class ClientAddContainer extends React.Component {
     this.context.showLoading();
     try {
       await ClientController.addClient(this.state);
-      alert('A new client is added.');
+      alert("A new user is added.");
       this.props.history.goBack();
     } catch (error) {
       alert(error.message);
@@ -54,7 +54,7 @@ class ClientAddContainer extends React.Component {
 
     let last = groups[groups.length - 1];
     if (!last.name || !last.division) {
-      alert('Please complete the current participant group to add more.');
+      alert("Please complete the current participant group to add more.");
       return;
     }
     groups.push(this.generateNewGroup());
@@ -74,8 +74,8 @@ class ClientAddContainer extends React.Component {
         },
         complete: results => {
           let { groups } = this.state;
-          groups[index]['participant_list'] = results.data;
-          groups[index]['number_of_participants'] = results.data.length;
+          groups[index]["participant_list"] = results.data;
+          groups[index]["number_of_participants"] = results.data.length;
           this.setState({ groups });
         }
       });
@@ -103,21 +103,21 @@ class ClientAddContainer extends React.Component {
   render() {
     return (
       <div className={styles.wrapper}>
-        <h1> Add a new client </h1>
+        <h1> Add a new user </h1>
         <div className={styles.container}>
           <h2>Basic Info</h2>
           <div className={styles.inputItem}>
             <span>Organization</span>
             <input
               value={this.state.basic.org}
-              onChange={this.basicInfoChanged('org')}
+              onChange={this.basicInfoChanged("org")}
             />
           </div>
           <div className={styles.inputItem}>
             <span>Contact</span>
             <input
               value={this.state.basic.contact}
-              onChange={this.basicInfoChanged('contact')}
+              onChange={this.basicInfoChanged("contact")}
             />
           </div>
         </div>
@@ -135,14 +135,14 @@ class ClientAddContainer extends React.Component {
               <span>Participant Group Name</span>
               <input
                 value={group.name}
-                onChange={this.groupChange('name', index)}
+                onChange={this.groupChange("name", index)}
               />
             </div>
             <div className={styles.inputItem}>
               <span>Division / Location</span>
               <input
                 value={group.division}
-                onChange={this.groupChange('division', index)}
+                onChange={this.groupChange("division", index)}
               />
             </div>
             <div className={styles.inputItem}>
@@ -159,9 +159,9 @@ class ClientAddContainer extends React.Component {
               </div>
               <input
                 ref={ref => (this.fileInputs[group.id] = ref)}
-                type='file'
+                type="file"
                 className={styles.file}
-                accept='.csv'
+                accept=".csv"
                 onChange={this.fileUploadChange(index)}
               />
             </div>

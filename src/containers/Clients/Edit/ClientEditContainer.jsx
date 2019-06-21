@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Papa from 'papaparse';
-import uuid from 'uuid/v4';
+import React from "react";
+import PropTypes from "prop-types";
+import Papa from "papaparse";
+import uuid from "uuid/v4";
 
-import { AppContext } from 'components';
-import { ClientController } from 'controllers';
+import { AppContext } from "components";
+import { ClientController } from "controllers";
 
-import styles from './ClientEditContainer.module.scss';
+import styles from "./ClientEditContainer.module.scss";
 
 class ClientEditContainer extends React.Component {
   constructor(props) {
@@ -25,7 +25,7 @@ class ClientEditContainer extends React.Component {
       name: data.name,
       email: data.email,
       phone: data.phone,
-      status: data.status === 'false' ? false : true
+      status: data.status === "false" ? false : true
     });
     this.context.hideLoading();
   }
@@ -34,7 +34,7 @@ class ClientEditContainer extends React.Component {
     this.context.showLoading();
     try {
       await ClientController.updateClient(this.state);
-      alert('This client is updated.');
+      alert("This user is updated.");
       this.props.history.goBack();
     } catch (error) {
       alert(error.message);
@@ -60,7 +60,7 @@ class ClientEditContainer extends React.Component {
             <span>Name</span>
             <input
               value={this.state.name}
-              onChange={this.basicInfoChanged('name')}
+              onChange={this.basicInfoChanged("name")}
             />
           </div>
           <div className={styles.inputItem}>
@@ -68,14 +68,14 @@ class ClientEditContainer extends React.Component {
             <input
               disabled={true}
               value={this.state.email}
-              onChange={this.basicInfoChanged('email')}
+              onChange={this.basicInfoChanged("email")}
             />
           </div>
           <div className={styles.inputItem}>
             <span>Phone Number</span>
             <input
               value={this.state.phone}
-              onChange={this.basicInfoChanged('phone')}
+              onChange={this.basicInfoChanged("phone")}
             />
           </div>
         </div>

@@ -1,0 +1,16 @@
+@import "theme/colors.scss";
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  font-size: 16px;
+  justify-content: center;
+  align-items: center;
+
+  .container {
+    width: 200px;
+    height: 100px;
+    margin-top: 300px;
+  }
+}

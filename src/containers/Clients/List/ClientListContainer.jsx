@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import Pagination from "react-js-pagination";
 import { AppContext } from "components";
 import { ClientController } from "controllers";
 import styles from "./ClientListContainer.module.scss";
@@ -21,12 +21,18 @@ class ClientListContainer extends React.Component {
     this.state = {
       data: [],
       keyword: "",
-      filter: "name"
+      filter: "name",
+      activePage: 1,
+      itemPerPage: 10
     };
   }
 
   async componentDidMount() {
     await this.reload();
+  }
+
+  handlePageChange(pageNumber) {
+    this.setState({ activePage: pageNumber });
   }
 
   reload = async () => {
@@ -108,6 +114,43 @@ class ClientListContainer extends React.Component {
     this.setState({ data });
   }
 
+  createRow() {
+    const { data } = this.state;
+    let children = [];
+    for (
+      var i = (this.state.activePage - 1) * this.state.itemPerPage;
+      i < this.state.activePage * this.state.itemPerPage;
+      i++
+    ) {
+      let item = data[i];
+      children.push(
+        _.isEmpty(item) ? null : (
+          <tr key={item.id}>
+            <td>{`${i + 1}`}</td>
+            <td>{item.name}</td>
+            <td>{item.email}</td>
+            <td>{item.phone}</td>
+            <td>
+              <span onClick={this.editClicked(item.id)}>
+                <i className={`fa fa-pencil-square-o ${styles.iconPencil}`} />
+              </span>
+              {item.status ? (
+                <span onClick={this.deactivateClicked(item.id)}>
+                  <i className={`fa fa-trash-o ${styles.iconTrash}`} />
+                </span>
+              ) : (
+                <span onClick={this.activateClicked(item.id)}>
+                  <i className={`fa fa-refresh ${styles.iconRefresh}`} />
+                </span>
+              )}
+            </td>
+          </tr>
+        )
+      );
+    }
+    return children;
+  }
+
   render() {
     return (
       <div className={styles.wrapper}>
@@ -169,43 +212,30 @@ class ClientListContainer extends React.Component {
           </div> */}
         </div>
         {this.state.data.length ? (
-          <table>
-            <thead>
-              <tr className={styles.header}>
-                {this.columns.map(item => (
-                  <th key={item.title} onClick={() => this.sortBy(item.key)}>
-                    {item.title}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.data.map((item, index) => (
-                <tr key={item.id}>
-                  <td>{`${index + 1}`}</td>
-                  <td>{item.name}</td>
-                  <td>{item.email}</td>
-                  <td>{item.phone}</td>
-                  <td>
-                    <span onClick={this.editClicked(item.id)}>
-                      <i
-                        className={`fa fa-pencil-square-o ${styles.iconPencil}`}
-                      />
-                    </span>
-                    {item.status ? (
-                      <span onClick={this.deactivateClicked(item.id)}>
-                        <i className={`fa fa-trash-o ${styles.iconTrash}`} />
-                      </span>
-                    ) : (
-                      <span onClick={this.activateClicked(item.id)}>
-                        <i className={`fa fa-refresh ${styles.iconRefresh}`} />
-                      </span>
-                    )}
-                  </td>
+          <div>
+            <table>
+              <thead>
+                <tr className={styles.header}>
+                  {this.columns.map(item => (
+                    <th key={item.title} onClick={() => this.sortBy(item.key)}>
+                      {item.title}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>{this.createRow()}</tbody>
+            </table>
+            <div className={styles.bottom}>
+              <Pagination
+                activePage={this.state.activePage}
+                itemsCountPerPage={this.state.itemPerPage}
+                totalItemsCount={this.state.data.length}
+                onChange={pageNumber => this.handlePageChange(pageNumber)}
+                innerClass={styles.pagination}
+                activeClass={styles.activeItem}
+              />
+            </div>
+          </div>
         ) : (
           <h3>No Search Result</h3>
         )}
