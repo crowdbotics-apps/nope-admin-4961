@@ -52,23 +52,23 @@ class CampaignListContainer extends React.Component {
     });
   };
 
-  addClicked = () => {
-    this.props.history.push("/campaigns/add");
-  };
+  // addClicked = () => {
+  //   this.props.history.push("/block-numbers/add");
+  // };
 
   editClicked = campaignId => () => {
-    this.props.history.push(`/campaigns/edit/${campaignId}`);
+    this.props.history.push(`/block-numbers/edit/${campaignId}`);
   };
 
   activateClicked = id => async () => {
-    if (window.confirm("Do you want to activate this campaign?")) {
+    if (window.confirm("Do you want to un-block this phone number?")) {
       await CampaignController.activateCampaign(id);
       await this.reload();
     }
   };
 
   deactivateClicked = id => async () => {
-    if (window.confirm("Do you want to deactivate this campaign?")) {
+    if (window.confirm("Do you want to block this phone number?")) {
       await CampaignController.deactivateCampaign(id);
       await this.reload();
     }
@@ -144,12 +144,12 @@ class CampaignListContainer extends React.Component {
                   <td>{item.blocks.length}</td>
                   <td>{item.blocks.length >= 10 ? "Yes" : "No"}</td>
                   <td>
-                    <span onClick={this.editClicked(item.id)}>
+                    {/* <span onClick={this.editClicked(item.id)}>
                       <i
                         className={`fa fa-pencil-square-o ${styles.iconPencil}`}
                       />
-                    </span>
-                    {item.status ? (
+                    </span> */}
+                    {item.blocks.length < 10 ? (
                       <span onClick={this.deactivateClicked(item.id)}>
                         <i className={`fa fa-trash-o ${styles.iconTrash}`} />
                       </span>

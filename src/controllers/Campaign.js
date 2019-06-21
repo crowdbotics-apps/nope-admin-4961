@@ -1,7 +1,7 @@
-import moment from 'moment';
-import { Firestore, Storage } from '../lib/firebase';
+import moment from "moment";
+import { Firestore, Storage } from "../lib/firebase";
 
-let collection = Firestore.collection('block_numbers');
+let collection = Firestore.collection("block_numbers");
 
 export const addCampaign = async payload => {
   try {
@@ -18,7 +18,7 @@ export const addCampaign = async payload => {
             let ref = Storage.ref(`media/${moment().valueOf()}`);
             let task = ref.put(question.media);
             task.on(
-              'state_changed',
+              "state_changed",
               snapshot => {},
               error => {},
               () => {
@@ -53,7 +53,7 @@ export const addCampaign = async payload => {
           let ref = Storage.ref(`media/${moment().valueOf()}`);
           let task = ref.put(payload.basic.logo);
           task.on(
-            'state_changed',
+            "state_changed",
             snapshot => {},
             error => {},
             () => {
@@ -79,10 +79,10 @@ export const addCampaign = async payload => {
 
     // sending invitation emails
     fetch(
-      'https://us-central1-social-lens-3a3d5.cloudfunctions.net/inviteParticipants',
+      "https://us-central1-social-lens-3a3d5.cloudfunctions.net/inviteParticipants",
       {
-        method: 'post',
-        headers: { 'Content-Type': 'application/json' },
+        method: "post",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: campaignDoc.id })
       }
     )
@@ -113,7 +113,7 @@ export const updateCampaign = async payload => {
             let ref = Storage.ref(`media/${moment().valueOf()}`);
             let task = ref.put(question.media);
             task.on(
-              'state_changed',
+              "state_changed",
               snapshot => {},
               error => {},
               () => {
@@ -152,7 +152,7 @@ export const updateCampaign = async payload => {
           let ref = Storage.ref(`media/${moment().valueOf()}`);
           let task = ref.put(payload.basic.logo);
           task.on(
-            'state_changed',
+            "state_changed",
             snapshot => {},
             error => {},
             () => {
@@ -186,14 +186,14 @@ export const getCampaignById = async campaignId =>
     campaignDoc.onSnapshot(async snapshot => {
       let campaignData = snapshot.data();
 
-      let clientDoc = Firestore.collection('clients').doc(
+      let clientDoc = Firestore.collection("clients").doc(
         campaignData.client_id
       );
       clientDoc.onSnapshot(client_snapshot => {
         let client_data = client_snapshot.data();
         campaignData.client = client_data;
 
-        let participantDoc = Firestore.collection('participant_groups').doc(
+        let participantDoc = Firestore.collection("participant_groups").doc(
           campaignData.participant_group_id
         );
         participantDoc.onSnapshot(group_snapshot => {
@@ -229,9 +229,17 @@ export const getCampaigns = async () => {
 };
 
 export const deactivateCampaign = async campaignId => {
+  let campaign = await getPhoneNumberById(campaignId);
+  let newblocks = [];
+  for (let i = 0; i < 10; i++) {
+    newblocks.push({
+      reporter_id: "admin",
+      date: new Date()
+    });
+  }
   try {
     await collection.doc(campaignId).update({
-      status: false
+      blocks: newblocks
     });
   } catch (error) {
     throw error;
@@ -241,7 +249,7 @@ export const deactivateCampaign = async campaignId => {
 export const activateCampaign = async campaignId => {
   try {
     await collection.doc(campaignId).update({
-      status: true
+      blocks: []
     });
   } catch (error) {
     throw error;
