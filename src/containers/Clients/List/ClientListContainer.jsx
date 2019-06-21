@@ -1,21 +1,22 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { AppContext } from 'components';
-import { ClientController } from 'controllers';
-import styles from './ClientListContainer.module.scss';
+import { AppContext } from "components";
+import { ClientController } from "controllers";
+import styles from "./ClientListContainer.module.scss";
 
 class ClientListContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.columns = ['No', 'Name', 'Email', 'Phone Number', 'Actions'];
+    this.columns = ["No", "Name", "Email", "Phone Number", "Actions"];
 
     // this.columns = ['No', 'Name', 'Email', 'Phone Number'];
 
     this.state = {
       data: [],
-      keyword: ''
+      keyword: "",
+      filter: "name"
     };
   }
 
@@ -27,24 +28,26 @@ class ClientListContainer extends React.Component {
     this.context.showLoading();
 
     let data = await ClientController.getClients();
-
+    console.log(data);
+    console.log(this.state.filter);
     data = data
       .filter(client =>
-        client.name.toLowerCase().includes(this.state.keyword.toLowerCase())
+        (client[this.state.filter] || "")
+          .toLowerCase()
+          .includes(this.state.keyword.toLowerCase())
       )
       .map(client => {
         let item = { ...client };
 
         return item;
       });
-    this.setState({
-      data
-    });
+
+    await this.setState({ data });
     this.context.hideLoading();
   };
 
   addClicked = () => {
-    this.props.history.push('/clients/add');
+    this.props.history.push("/clients/add");
   };
 
   editClicked = clientId => () => {
@@ -52,7 +55,7 @@ class ClientListContainer extends React.Component {
   };
 
   deactivateClicked = clientId => async () => {
-    var res = window.confirm('Do you want to deactivate this client?');
+    var res = window.confirm("Do you want to deactivate this user?");
     if (res) {
       await ClientController.deactivateClient(clientId);
       await this.reload();
@@ -60,11 +63,17 @@ class ClientListContainer extends React.Component {
   };
 
   activateClicked = clientId => async () => {
-    var res = window.confirm('Do you want to activate this client?');
+    var res = window.confirm("Do you want to activate this user?");
     if (res) {
       await ClientController.activateClient(clientId);
       await this.reload();
     }
+  };
+
+  searchfilterChanged = filter => () => {
+    this.setState({
+      filter
+    });
   };
 
   searchInputChanged = e => {
@@ -91,17 +100,58 @@ class ClientListContainer extends React.Component {
     return (
       <div className={styles.wrapper}>
         <div className={styles.top}>
-          <div className={styles.searchbar}>
-            <i className={`fa fa-search ${styles.iconSearch}`} />
-            <input
-              type='text'
-              placeholder='Type organization name here and press enter to get the result...'
-              value={this.state.keyword}
-              onChange={this.searchInputChanged}
-              onKeyPress={this.searchInputKeyPressed}
-            />
+          <div className={styles.searchContainer}>
+            <div className={styles.searchbar}>
+              <i className={`fa fa-search ${styles.iconSearch}`} />
+              <input
+                type="text"
+                placeholder="Type here and press enter to get the result..."
+                value={this.state.keyword}
+                onChange={this.searchInputChanged}
+                onKeyPress={this.searchInputKeyPressed}
+              />
+            </div>
+            <div className={styles.searchfilters}>
+              <div
+                className={styles.filter}
+                onClick={this.searchfilterChanged("name")}
+              >
+                <input
+                  type="checkbox"
+                  value="name"
+                  checked={this.state.filter === "name"}
+                  onChange={this.searchfilterChanged("name")}
+                />
+                Search by name
+              </div>
+              <div
+                className={styles.filter}
+                onClick={this.searchfilterChanged("email")}
+              >
+                <input
+                  type="checkbox"
+                  value="email"
+                  checked={this.state.filter === "email"}
+                  onChange={this.searchfilterChanged("email")}
+                />
+                Search by email
+              </div>
+
+              <div
+                className={styles.filter}
+                onClick={this.searchfilterChanged("phone")}
+              >
+                <input
+                  type="checkbox"
+                  value="org"
+                  checked={this.state.filter === "phone"}
+                  onChange={this.searchfilterChanged("phone")}
+                />
+                Search by phone number
+              </div>
+            </div>
           </div>
-          {/* <div onClick={this.addClicked}>
+          {/* <div className={styles.btnAdd} onClick={this.addClicked}>
             <i className={`fa fa-plus ${styles.icon}`} />
             Add
           </div> */}

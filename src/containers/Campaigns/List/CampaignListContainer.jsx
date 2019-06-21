@@ -1,27 +1,27 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { AppContext } from 'components';
-import { CampaignController } from 'controllers';
-import styles from './CampaignListContainer.module.scss';
+import { AppContext } from "components";
+import { CampaignController } from "controllers";
+import styles from "./CampaignListContainer.module.scss";
 
 class CampaignListContainer extends React.Component {
   constructor(props) {
     super(props);
 
     this.columns = [
-      'No',
-      'Phone Number',
-      'Number of Calls',
-      'Number of blacklists',
-      'Blacklisted',
-      'Actions'
+      "No",
+      "Phone Number",
+      "Number of Calls",
+      "Number of blacklists",
+      "Blacklisted",
+      "Actions"
     ];
 
     this.state = {
       data: [],
-      filter: 'phone',
-      keyword: ''
+      filter: "phone",
+      keyword: ""
     };
   }
 
@@ -52,7 +52,7 @@ class CampaignListContainer extends React.Component {
   };
 
   addClicked = () => {
-    this.props.history.push('/campaigns/add');
+    this.props.history.push("/campaigns/add");
   };
 
   editClicked = campaignId => () => {
@@ -60,14 +60,14 @@ class CampaignListContainer extends React.Component {
   };
 
   activateClicked = id => async () => {
-    if (window.confirm('Do you want to activate this campaign?')) {
+    if (window.confirm("Do you want to activate this campaign?")) {
       await CampaignController.activateCampaign(id);
       await this.reload();
     }
   };
 
   deactivateClicked = id => async () => {
-    if (window.confirm('Do you want to deactivate this campaign?')) {
+    if (window.confirm("Do you want to deactivate this campaign?")) {
       await CampaignController.deactivateCampaign(id);
       await this.reload();
     }
@@ -101,8 +101,8 @@ class CampaignListContainer extends React.Component {
             <div className={styles.searchbar}>
               <i className={`fa fa-search ${styles.iconSearch}`} />
               <input
-                type='text'
-                placeholder='Type here and press enter to get the result...'
+                type="text"
+                placeholder="Type here and press enter to get the result..."
                 value={this.state.keyword}
                 onChange={this.searchInputChanged}
                 onKeyPress={this.searchInputKeyPressed}
@@ -130,7 +130,7 @@ class CampaignListContainer extends React.Component {
                   <td>{item.phone}</td>
                   <td>{item.calls}</td>
                   <td>{item.blocks.length}</td>
-                  <td>{item.blocks.length >= 10 ? 'Yes' : 'No'}</td>
+                  <td>{item.blocks.length >= 10 ? "Yes" : "No"}</td>
                   <td>
                     <span onClick={this.editClicked(item.id)}>
                       <i

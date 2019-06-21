@@ -1,10 +1,10 @@
-import { Firestore } from '../lib/firebase';
+import { Firestore } from "../lib/firebase";
 
 export const addClient = async payload => {
   try {
     let groupIds = [];
     let tasks = payload.groups.map(group => {
-      let groupDoc = Firestore.collection('participant_groups').doc();
+      let groupDoc = Firestore.collection("participant_groups").doc();
       let participant_list = group.participant_list.map(participant => {
         return {
           name: participant[0],
@@ -23,11 +23,11 @@ export const addClient = async payload => {
     });
     await Promise.all(tasks);
 
-    let clientDoc = Firestore.collection('users').doc();
+    let clientDoc = Firestore.collection("users").doc();
     await clientDoc.set({
       id: clientDoc.id,
-      name: clientDoc.name || '',
-      phone: clientDoc.phone || '',
+      name: clientDoc.name || "",
+      phone: clientDoc.phone || "",
       email: clientDoc.email
     });
   } catch (error) {
@@ -37,7 +37,7 @@ export const addClient = async payload => {
 
 export const updateClient = async payload => {
   try {
-    let clientDoc = Firestore.collection('users').doc(payload.clientId);
+    let clientDoc = Firestore.collection("users").doc(payload.clientId);
     await clientDoc.update({
       id: payload.clientId,
       name: payload.name,
@@ -52,7 +52,7 @@ export const updateClient = async payload => {
 
 export const deactivateClient = async clientId => {
   try {
-    let clientCollection = Firestore.collection('clients');
+    let clientCollection = Firestore.collection("users");
     await clientCollection.doc(clientId).update({
       status: false
     });
@@ -63,7 +63,7 @@ export const deactivateClient = async clientId => {
 
 export const activateClient = async clientId => {
   try {
-    let clientCollection = Firestore.collection('clients');
+    let clientCollection = Firestore.collection("users");
     await clientCollection.doc(clientId).update({
       status: true
     });
@@ -74,9 +74,14 @@ export const activateClient = async clientId => {
 
 export const getClientById = clientId =>
   new Promise((resolve, reject) => {
-    let clientDoc = Firestore.collection('users').doc(clientId);
+    let clientDoc = Firestore.collection("users").doc(clientId);
     clientDoc.onSnapshot(async snapshot => {
-      let clientData = snapshot.data();
+      let clientData = {
+        id: snapshot.data().id,
+        name: snapshot.data().name || "",
+        email: snapshot.data().email || "",
+        phone: snapshot.data().phone || ""
+      };
 
       resolve(clientData);
     });
@@ -84,7 +89,7 @@ export const getClientById = clientId =>
 
 // search clients with the criteria
 export const getClients = async () => {
-  let clientCollection = Firestore.collection('users');
+  let clientCollection = Firestore.collection("users");
 
   try {
     let snapshot = await clientCollection.get();
