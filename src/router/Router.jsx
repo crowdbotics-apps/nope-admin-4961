@@ -1,82 +1,82 @@
-import React from 'react';
-import cn from 'classnames';
-import { Link, Switch, Route, Redirect } from 'react-router-dom';
+import React from "react";
+import cn from "classnames";
+import { Link, Switch, Route, Redirect } from "react-router-dom";
 
 // clients
-import ClientListContainer from 'containers/Clients/List';
-import ClientAddContainer from 'containers/Clients/Add';
-import ClientEditContainer from 'containers/Clients/Edit';
+import ClientListContainer from "containers/Clients/List";
+import ClientAddContainer from "containers/Clients/Add";
+import ClientEditContainer from "containers/Clients/Edit";
 
 // campaigns
-import CampaignListContainer from 'containers/Campaigns/List';
-import CampaignAddContainer from 'containers/Campaigns/Add';
-import CampaignEditContainer from 'containers/Campaigns/Edit';
+import CampaignListContainer from "containers/Campaigns/List";
+import CampaignAddContainer from "containers/Campaigns/Add";
+import CampaignEditContainer from "containers/Campaigns/Edit";
 
 // campaign details
-import CampaignReportContainer from 'containers/CampaignReport/List';
+import CampaignReportContainer from "containers/CampaignReport/List";
 
 //report
-import ReportContainer from 'containers/Report';
+import ReportContainer from "containers/Report";
 
 //participants
-import ParticipantListContainer from 'containers/Participants/List';
+import ParticipantListContainer from "containers/Participants/List";
 
-import styles from './Router.module.scss';
+import styles from "./Router.module.scss";
 
 class Router extends React.Component {
   render() {
     let selectedMenuItem = 0;
-    if (window.location.pathname.startsWith('/clients')) {
+    if (window.location.pathname.startsWith("/users")) {
       selectedMenuItem = 0;
-    } else if (window.location.pathname.startsWith('/campaigns')) {
+    } else if (window.location.pathname.startsWith("/campaigns")) {
       selectedMenuItem = 1;
     } else if (
-      window.location.pathname.startsWith('/report') ||
-      window.location.pathname.startsWith('/campaign-report')
+      window.location.pathname.startsWith("/report") ||
+      window.location.pathname.startsWith("/campaign-report")
     ) {
       selectedMenuItem = 2;
-    } else if (window.location.pathname.startsWith('/participants')) {
+    } else if (window.location.pathname.startsWith("/participants")) {
       selectedMenuItem = 3;
     } else {
       selectedMenuItem = 0; // default
     }
     return (
       <div className={styles.wrapper}>
-        <header>Lens Engage</header>
+        <header>Nope Admin</header>
         <div className={styles.container}>
           <div className={styles.sidebar}>
             <Link
-              to='/clients'
+              to="/users"
               className={cn(
                 styles.menuitem,
-                selectedMenuItem === 0 && styles['menuitem-selected']
+                selectedMenuItem === 0 && styles["menuitem-selected"]
               )}
             >
-              Clients
+              Users
             </Link>
             <Link
-              to='/campaigns'
+              to="/campaigns"
               className={cn(
                 styles.menuitem,
-                selectedMenuItem === 1 && styles['menuitem-selected']
+                selectedMenuItem === 1 && styles["menuitem-selected"]
               )}
             >
               Campaigns
             </Link>
             <Link
-              to='/report'
+              to="/report"
               className={cn(
                 styles.menuitem,
-                selectedMenuItem === 2 && styles['menuitem-selected']
+                selectedMenuItem === 2 && styles["menuitem-selected"]
               )}
             >
               Reporting
             </Link>
             <Link
-              to='/participants'
+              to="/participants"
               className={cn(
                 styles.menuitem,
-                selectedMenuItem === 3 && styles['menuitem-selected']
+                selectedMenuItem === 3 && styles["menuitem-selected"]
               )}
             >
               Participants
@@ -84,25 +84,25 @@ class Router extends React.Component {
           </div>
           <div className={styles.content}>
             <Switch>
-              <Route path='/clients/add' component={ClientAddContainer} />
-              <Route path='/clients/edit/:id' component={ClientEditContainer} />
-              <Route path='/clients' component={ClientListContainer} />
-              <Route path='/campaigns/add' component={CampaignAddContainer} />
+              <Route path="/users/add" component={ClientAddContainer} />
+              <Route path="/users/edit/:id" component={ClientEditContainer} />
+              <Route path="/users" component={ClientListContainer} />
+              <Route path="/campaigns/add" component={CampaignAddContainer} />
               <Route
-                path='/campaigns/edit/:id'
+                path="/campaigns/edit/:id"
                 component={CampaignEditContainer}
               />
-              <Route path='/campaigns' component={CampaignListContainer} />
-              <Route path='/report' component={ReportContainer} />
+              <Route path="/campaigns" component={CampaignListContainer} />
+              <Route path="/report" component={ReportContainer} />
               <Route
-                path='/campaign-report/:id'
+                path="/campaign-report/:id"
                 component={CampaignReportContainer}
               />
               <Route
-                path='/participants'
+                path="/participants"
                 component={ParticipantListContainer}
               />
-              <Redirect to='/clients' />
+              <Redirect to="/users" />
             </Switch>
           </div>
         </div>

@@ -1,12 +1,12 @@
-import { Firestore } from '../lib/firebase';
+import { Firestore } from "../lib/firebase";
 
-import { getParticipantById } from './Participants';
+import { getParticipantById } from "./Participants";
 
 export const addClient = async payload => {
   try {
     let groupIds = [];
     let tasks = payload.groups.map(group => {
-      let groupDoc = Firestore.collection('participant_groups').doc();
+      let groupDoc = Firestore.collection("participant_groups").doc();
       let participant_list = group.participant_list.map(participant => {
         return {
           name: participant[0],
@@ -25,13 +25,12 @@ export const addClient = async payload => {
     });
     await Promise.all(tasks);
 
-    let clientDoc = Firestore.collection('clients').doc();
+    let clientDoc = Firestore.collection("users").doc();
     await clientDoc.set({
       id: clientDoc.id,
-      org: payload.basic.org,
-      contact: payload.basic.contact,
-      status: true,
-      participant_group_ids: groupIds
+      name: clientDoc.name || "",
+      phone: clientDoc.phone || "",
+      email: clientDoc.email
     });
   } catch (error) {
     throw error;
@@ -45,9 +44,9 @@ export const updateClient = async payload => {
       let groupDoc;
       if (group.newlyAdded) {
         //newly added
-        groupDoc = Firestore.collection('participant_groups').doc();
+        groupDoc = Firestore.collection("participant_groups").doc();
       } else {
-        groupDoc = Firestore.collection('participant_groups').doc(group.id);
+        groupDoc = Firestore.collection("participant_groups").doc(group.id);
       }
 
       let participant_list = group.participant_list.map(participant => {
@@ -78,7 +77,7 @@ export const updateClient = async payload => {
     });
     await Promise.all(tasks);
 
-    let clientDoc = Firestore.collection('clients').doc(payload.clientId);
+    let clientDoc = Firestore.collection("clients").doc(payload.clientId);
     await clientDoc.update({
       id: payload.clientId,
       org: payload.basic.org,
@@ -93,7 +92,7 @@ export const updateClient = async payload => {
 
 export const deactivateClient = async clientId => {
   try {
-    let clientCollection = Firestore.collection('clients');
+    let clientCollection = Firestore.collection("clients");
     await clientCollection.doc(clientId).update({
       status: false
     });
@@ -104,7 +103,7 @@ export const deactivateClient = async clientId => {
 
 export const activateClient = async clientId => {
   try {
-    let clientCollection = Firestore.collection('clients');
+    let clientCollection = Firestore.collection("clients");
     await clientCollection.doc(clientId).update({
       status: true
     });
@@ -115,37 +114,17 @@ export const activateClient = async clientId => {
 
 export const getClientById = clientId =>
   new Promise((resolve, reject) => {
-    let clientDoc = Firestore.collection('clients').doc(clientId);
+    let clientDoc = Firestore.collection("users").doc(clientId);
     clientDoc.onSnapshot(async snapshot => {
       let clientData = snapshot.data();
 
-      let tasks = clientData.participant_group_ids.map(
-        groupId =>
-          new Promise((resolve, reject) => {
-            let participant_group_doc = Firestore.collection(
-              'participant_groups'
-            ).doc(groupId);
-            participant_group_doc.onSnapshot(group_snapshot => {
-              let participant_group_data = group_snapshot.data();
-              resolve(participant_group_data);
-            });
-          })
-      );
-      clientData.participant_groups = await Promise.all(tasks);
-      let query = Firestore.collection('campaigns').where(
-        'client_id',
-        '==',
-        clientId
-      );
-      let docSnapshots = await query.get();
-      clientData.campaign = docSnapshots.docs.length;
       resolve(clientData);
     });
   });
 
 // search clients with the criteria
 export const getClients = async () => {
-  let clientCollection = Firestore.collection('clients');
+  let clientCollection = Firestore.collection("users");
 
   try {
     let snapshot = await clientCollection.get();

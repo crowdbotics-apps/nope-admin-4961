@@ -1,9 +1,10 @@
 // Initialize Firebase
 export default {
-  apiKey: 'AIzaSyBGgm7zvYP5VF5H1uUGUyvkiEt137QOkzs',
-  authDomain: 'social-lens-3a3d5.firebaseapp.com',
-  databaseURL: 'https://social-lens-3a3d5.firebaseio.com',
-  projectId: 'social-lens-3a3d5',
-  storageBucket: 'social-lens-3a3d5.appspot.com',
-  messagingSenderId: '60111536025'
+  apiKey: "AIzaSyBj6c_jQwOjC_mGFSeHRjGmhgPvLJNe7tY",
+  authDomain: "nope-c598f.firebaseapp.com",
+  databaseURL: "https://nope-c598f.firebaseio.com",
+  projectId: "nope-c598f",
+  storageBucket: "nope-c598f.appspot.com",
+  messagingSenderId: "873946657352",
+  appId: "1:873946657352:web:493d43596a4abe01"
 };

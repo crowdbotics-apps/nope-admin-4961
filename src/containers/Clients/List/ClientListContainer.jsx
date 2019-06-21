@@ -1,28 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import { AppContext } from 'components';
-import { ClientController } from 'controllers';
-import styles from './ClientListContainer.module.scss';
+import { AppContext } from "components";
+import { ClientController } from "controllers";
+import styles from "./ClientListContainer.module.scss";
 
 class ClientListContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.columns = [
-      'No',
-      'Organization',
-      'Status',
-      'Participants',
-      'Participant groups',
-      'Divisions / Locations',
-      'Active Campaigns',
-      'Actions'
-    ];
+    // this.columns = ["No", "Name", "Email", "Phone Number", "Actions"];
+
+    this.columns = ["No", "Name", "Email", "Phone Number"];
 
     this.state = {
       data: [],
-      keyword: ''
+      keyword: ""
     };
   }
 
@@ -37,18 +30,11 @@ class ClientListContainer extends React.Component {
 
     data = data
       .filter(client =>
-        client.org.toLowerCase().includes(this.state.keyword.toLowerCase())
+        client.name.toLowerCase().includes(this.state.keyword.toLowerCase())
       )
       .map(client => {
         let item = { ...client };
-        let emailSet = new Set();
-        client.participant_groups.map(group => {
-          for (let participant of group.participant_list) {
-            emailSet.add(participant.email);
-          }
-          return;
-        });
-        item.participants = Array.from(emailSet);
+
         return item;
       });
     this.setState({
@@ -58,7 +44,7 @@ class ClientListContainer extends React.Component {
   };
 
   addClicked = () => {
-    this.props.history.push('/clients/add');
+    this.props.history.push("/clients/add");
   };
 
   editClicked = clientId => () => {
@@ -66,7 +52,7 @@ class ClientListContainer extends React.Component {
   };
 
   deactivateClicked = clientId => async () => {
-    var res = window.confirm('Do you want to deactivate this client?');
+    var res = window.confirm("Do you want to deactivate this client?");
     if (res) {
       await ClientController.deactivateClient(clientId);
       await this.reload();
@@ -74,7 +60,7 @@ class ClientListContainer extends React.Component {
   };
 
   activateClicked = clientId => async () => {
-    var res = window.confirm('Do you want to activate this client?');
+    var res = window.confirm("Do you want to activate this client?");
     if (res) {
       await ClientController.activateClient(clientId);
       await this.reload();
@@ -108,17 +94,17 @@ class ClientListContainer extends React.Component {
           <div className={styles.searchbar}>
             <i className={`fa fa-search ${styles.iconSearch}`} />
             <input
-              type='text'
-              placeholder='Type organization name here and press enter to get the result...'
+              type="text"
+              placeholder="Type organization name here and press enter to get the result..."
               value={this.state.keyword}
               onChange={this.searchInputChanged}
               onKeyPress={this.searchInputKeyPressed}
             />
           </div>
-          <div onClick={this.addClicked}>
+          {/* <div onClick={this.addClicked}>
             <i className={`fa fa-plus ${styles.icon}`} />
             Add
-          </div>
+          </div> */}
         </div>
         {this.state.data.length ? (
           <table>
@@ -133,13 +119,10 @@ class ClientListContainer extends React.Component {
               {this.state.data.map((item, index) => (
                 <tr key={item.id}>
                   <td>{`${index + 1}`}</td>
-                  <td>{item.org}</td>
-                  <td>{item.status ? 'Active' : 'Inactive'}</td>
-                  <td>{item.participants.length}</td>
-                  <td>{item.participant_group_ids.length}</td>
-                  <td>{item.participant_group_ids.length}</td>
-                  <td>{item.campaign}</td>
-                  <td>
+                  <td>{item.name}</td>
+                  <td>{item.email}</td>
+                  <td>{item.phone}</td>
+                  {/* <td>
                     <span onClick={this.editClicked(item.id)}>
                       <i
                         className={`fa fa-pencil-square-o ${styles.iconPencil}`}
@@ -154,7 +137,7 @@ class ClientListContainer extends React.Component {
                         <i className={`fa fa-refresh ${styles.iconRefresh}`} />
                       </span>
                     )}
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
