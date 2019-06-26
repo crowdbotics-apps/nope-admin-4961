@@ -1,18 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import uuid from "uuid/v4";
 import "react-phone-number-input/style.css";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import Switch from "react-switch";
 import { AppContext } from "components";
-import { ClientController, CampaignController } from "controllers";
+import { CampaignController } from "controllers";
 
 import styles from "./CampaignAddContainer.module.scss";
 import "react-datepicker/dist/react-datepicker.css";
-import selectStyles from "./select.styles";
 import { getCampaigns } from "../../../controllers/Campaign";
-
-var _ = require("lodash");
 
 class CampaignAddContainer extends React.Component {
   constructor(props) {
@@ -34,7 +30,7 @@ class CampaignAddContainer extends React.Component {
     blockNumbers &&
       blockNumbers.length !== 0 &&
       (await blockNumbers.map(phone => {
-        existPhones.push(phone.phone);
+        return existPhones.push(phone.phone);
       }));
     console.log(existPhones);
     this.setState({ existPhones });
@@ -49,8 +45,7 @@ class CampaignAddContainer extends React.Component {
   };
 
   addClicked = async () => {
-    // validation for basic info
-    let { existPhones, phone, calls, nopes, yeps, blockByAdmin } = this.state;
+    let { existPhones, phone } = this.state;
     if (!isValidPhoneNumber(phone)) {
       alert("Phone number is invalid!");
       return;
@@ -62,7 +57,6 @@ class CampaignAddContainer extends React.Component {
     }
 
     this.context.showLoading();
-    // adding a campaign
     await CampaignController.addCampaign(this.state);
     this.context.hideLoading();
     this.props.history.goBack();

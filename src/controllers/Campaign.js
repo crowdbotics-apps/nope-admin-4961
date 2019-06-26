@@ -1,5 +1,4 @@
-import moment from "moment";
-import { Firestore, Storage } from "../lib/firebase";
+import { Firestore } from "../lib/firebase";
 import uuid from "uuid/v4";
 
 let collection = Firestore.collection("block_numbers");
@@ -48,7 +47,6 @@ export const getCampaigns = async () => {
 };
 
 export const deactivateCampaign = async campaignId => {
-  let campaign = await getPhoneNumberById(campaignId);
   // let newblocks = [];
   // for (let i = 0; i < 10; i++) {
   //   newblocks.push({

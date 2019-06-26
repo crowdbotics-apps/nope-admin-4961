@@ -2,10 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
-import uuid from "uuid/v4";
 
 import { AppContext } from "components";
-import { ClientController, CampaignController } from "controllers";
+import { CampaignController } from "controllers";
 import QuestionType from "../../../constants/questionType";
 
 import styles from "./CampaignEditContainer.module.scss";

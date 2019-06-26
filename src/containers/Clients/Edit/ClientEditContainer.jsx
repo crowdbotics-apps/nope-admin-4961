@@ -1,7 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Papa from "papaparse";
-import uuid from "uuid/v4";
 
 import { AppContext } from "components";
 import { ClientController } from "controllers";
