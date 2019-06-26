@@ -55,13 +55,13 @@ class CampaignListContainer extends React.Component {
     });
   };
 
-  // addClicked = () => {
-  //   this.props.history.push("/block-numbers/add");
-  // };
-
-  editClicked = campaignId => () => {
-    this.props.history.push(`/block-numbers/edit/${campaignId}`);
+  addClicked = () => {
+    this.props.history.push("/block-numbers/add");
   };
+
+  // editClicked = campaignId => () => {
+  //   this.props.history.push(`/block-numbers/edit/${campaignId}`);
+  // };
 
   activateClicked = id => async () => {
     if (window.confirm("Do you want to un-block this phone number?")) {
@@ -158,10 +158,10 @@ class CampaignListContainer extends React.Component {
               />
             </div>
           </div>
-          {/* <div className={styles.btnAdd} onClick={this.addClicked}>
+          <div className={styles.btnAdd} onClick={this.addClicked}>
             <i className={`fa fa-plus ${styles.icon}`} />
             Add
-          </div> */}
+          </div>
         </div>
         {this.state.data.length ? (
           <div>

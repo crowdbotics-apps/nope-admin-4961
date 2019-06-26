@@ -10,7 +10,7 @@
     border: 1px solid $light-grey;
     padding: 20px 10px;
     margin-bottom: 50px;
-    width: 100%;
+    // width: 100%;
 
     h2 {
       font-weight: 600;
@@ -51,7 +51,7 @@
   }
 
   .inputItem {
-    width: 100%;
+    width: 600px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -60,7 +60,7 @@
 
     span {
       width: 150px;
-      text-align: center;
+      text-align: left;
     }
     input {
       flex: 1;
