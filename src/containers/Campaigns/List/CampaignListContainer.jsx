@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Pagination from "react-js-pagination";
+import Switch from "react-switch";
 import { AppContext } from "components";
 import { CampaignController } from "controllers";
 import styles from "./CampaignListContainer.module.scss";
@@ -16,8 +17,8 @@ class CampaignListContainer extends React.Component {
       { title: "Number of Calls", key: "calls" },
       { title: "Yep's", key: "yeps" },
       { title: "Nope's", key: "nopes" },
-      { title: "Blacklisted", key: "" },
-      { title: "Actions", key: "" }
+      { title: "Blacklisted", key: "" }
+      // { title: "Actions", key: "" }
     ];
 
     this.state = {
@@ -37,7 +38,6 @@ class CampaignListContainer extends React.Component {
     this.context.showLoading();
 
     let data = await CampaignController.getCampaigns();
-    console.log(data);
 
     data = data.filter(campaign =>
       campaign.phone.toLowerCase().includes(this.state.keyword.toLowerCase())
@@ -63,17 +63,25 @@ class CampaignListContainer extends React.Component {
   //   this.props.history.push(`/block-numbers/edit/${campaignId}`);
   // };
 
-  activateClicked = id => async () => {
+  async activateClicked(id) {
     if (window.confirm("Do you want to un-block this phone number?")) {
       await CampaignController.activateCampaign(id);
       await this.reload();
     }
-  };
+  }
 
-  deactivateClicked = id => async () => {
+  async deactivateClicked(id) {
     if (window.confirm("Do you want to block this phone number?")) {
       await CampaignController.deactivateCampaign(id);
       await this.reload();
+    }
+  }
+
+  handleActiveChange = async item => {
+    if (item.blockByAdmin || item.nopes >= 10) {
+      await this.activateClicked(item.id);
+    } else {
+      await this.deactivateClicked(item.id);
     }
   };
 
@@ -98,7 +106,6 @@ class CampaignListContainer extends React.Component {
   };
 
   sortBy(key) {
-    console.log(key);
     if (key !== "") {
       let { data } = this.state;
       data = _.orderBy(data, key);
@@ -123,17 +130,12 @@ class CampaignListContainer extends React.Component {
             <td>{item.calls}</td>
             <td>{item.yeps}</td>
             <td>{item.nopes}</td>
-            <td>{item.nopes >= 10 || item.blockByAdmin ? "Yes" : "No"}</td>
             <td>
-              {item.nopes >= 10 || item.blockByAdmin ? (
-                <span onClick={this.activateClicked(item.id)}>
-                  <i className={`fa fa-phone ${styles.iconRefresh}`} />
-                </span>
-              ) : (
-                <span onClick={this.deactivateClicked(item.id)}>
-                  <i className={`fa fa-trash-o ${styles.iconTrash}`} />
-                </span>
-              )}
+              <Switch
+                onChange={() => this.handleActiveChange(item)}
+                checked={item.nopes >= 10 || item.blockByAdmin ? true : false}
+                id="normal-switch"
+              />
             </td>
           </tr>
         )

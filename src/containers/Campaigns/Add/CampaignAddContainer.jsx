@@ -32,7 +32,6 @@ class CampaignAddContainer extends React.Component {
       (await blockNumbers.map(phone => {
         return existPhones.push(phone.phone);
       }));
-    console.log(existPhones);
     this.setState({ existPhones });
   }
 

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Pagination from "react-js-pagination";
 import { AppContext } from "components";
 import { ClientController } from "controllers";
+import { getCampaigns } from "../../../controllers/Campaign";
 import styles from "./ClientListContainer.module.scss";
 
 var _ = require("lodash");
@@ -23,7 +24,12 @@ class ClientListContainer extends React.Component {
       keyword: "",
       filter: "name",
       activePage: 1,
-      itemPerPage: 10
+      itemPerPage: 10,
+      totalUsers: 0,
+      totalYeps: 0,
+      totalNopes: 0,
+      totalBlacklisted: 0,
+      totalWhitelisted: 0
     };
   }
 
@@ -38,7 +44,23 @@ class ClientListContainer extends React.Component {
   reload = async () => {
     this.context.showLoading();
 
+    let phones = await getCampaigns();
+    phones &&
+      phones.length !== 0 &&
+      (await phones.map(phone => {
+        this.setState({
+          totalYeps: this.state.totalYeps + phone.yeps,
+          totalNopes: this.state.totalNopes + phone.nopes
+        });
+        if (phone.blockByAdmin || phone.nopes >= 10) {
+          this.setState({ totalBlacklisted: this.state.totalBlacklisted + 1 });
+        } else {
+          this.setState({ totalWhitelisted: this.state.totalWhitelisted + 1 });
+        }
+      }));
+
     let data = await ClientController.getClients();
+    await this.setState({ totalUsers: data.length || 0 });
     data = data
       .filter(client =>
         (client[this.state.filter] || "")
@@ -151,6 +173,28 @@ class ClientListContainer extends React.Component {
   render() {
     return (
       <div className={styles.wrapper}>
+        <div className={styles.container}>
+          <div className={styles.inputItem}>
+            <span>Total Users:</span>
+            <span>{this.state.totalUsers}</span>
+          </div>
+          <div className={styles.inputItem}>
+            <span>Total Yep's:</span>
+            <span>{this.state.totalYeps}</span>
+          </div>
+          <div className={styles.inputItem}>
+            <span>Total Nope's:</span>
+            <span>{this.state.totalNopes}</span>
+          </div>
+          <div className={styles.inputItem}>
+            <span>Total BlackListed:</span>
+            <span>{this.state.totalBlacklisted}</span>
+          </div>
+          <div className={styles.inputItem}>
+            <span>Total Whitelisted:</span>
+            <span>{this.state.totalWhitelisted}</span>
+          </div>
+        </div>
         <div className={styles.top}>
           <div className={styles.searchContainer}>
             <div className={styles.searchbar}>
@@ -208,6 +252,7 @@ class ClientListContainer extends React.Component {
             Add
           </div> */}
         </div>
+
         {this.state.data.length ? (
           <div>
             <table>
