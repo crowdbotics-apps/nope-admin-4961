@@ -14,7 +14,8 @@ class CampaignListContainer extends React.Component {
       { title: "No", key: "" },
       { title: "Phone Number", key: "phone" },
       { title: "Number of Calls", key: "calls" },
-      { title: "Number of blacklists", key: "block" },
+      { title: "Yep's", key: "yeps" },
+      { title: "Nope's", key: "nopes" },
       { title: "Blacklisted", key: "" },
       { title: "Actions", key: "" }
     ];
@@ -120,21 +121,17 @@ class CampaignListContainer extends React.Component {
             <td>{`${i + 1}`}</td>
             <td>{item.phone}</td>
             <td>{item.calls}</td>
-            <td>{item.blocks.length}</td>
-            <td>{item.blocks.length >= 10 ? "Yes" : "No"}</td>
+            <td>{item.yeps}</td>
+            <td>{item.nopes}</td>
+            <td>{item.nopes >= 10 || item.blockByAdmin ? "Yes" : "No"}</td>
             <td>
-              {/* <span onClick={this.editClicked(item.id)}>
-                      <i
-                        className={`fa fa-pencil-square-o ${styles.iconPencil}`}
-                      />
-                    </span> */}
-              {item.blocks.length < 10 ? (
-                <span onClick={this.deactivateClicked(item.id)}>
-                  <i className={`fa fa-trash-o ${styles.iconTrash}`} />
+              {item.nopes >= 10 || item.blockByAdmin ? (
+                <span onClick={this.activateClicked(item.id)}>
+                  <i className={`fa fa-phone ${styles.iconRefresh}`} />
                 </span>
               ) : (
-                <span onClick={this.activateClicked(item.id)}>
-                  <i className={`fa fa-refresh ${styles.iconRefresh}`} />
+                <span onClick={this.deactivateClicked(item.id)}>
+                  <i className={`fa fa-trash-o ${styles.iconTrash}`} />
                 </span>
               )}
             </td>
