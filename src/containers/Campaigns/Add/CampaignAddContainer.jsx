@@ -91,7 +91,7 @@ class CampaignAddContainer extends React.Component {
                 </div>
               </td>
             </tr>
-            <tr>
+            {/* <tr>
               <td>
                 <div className={styles.inputItem}>
                   <span>Yep's</span>
@@ -127,7 +127,7 @@ class CampaignAddContainer extends React.Component {
                   />
                 </div>
               </td>
-            </tr>
+            </tr> */}
             <tr>
               <td>
                 <div className={styles.inputItem}>
