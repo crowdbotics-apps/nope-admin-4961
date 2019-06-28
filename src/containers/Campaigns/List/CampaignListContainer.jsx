@@ -17,8 +17,8 @@ class CampaignListContainer extends React.Component {
       { title: "Number of Calls", key: "calls" },
       { title: "Yep's", key: "yeps" },
       { title: "Nope's", key: "nopes" },
-      { title: "Blacklisted", key: "" }
-      // { title: "Actions", key: "" }
+      { title: "Blacklisted", key: "" },
+      { title: "Whitelisted", key: "" }
     ];
 
     this.state = {
@@ -81,7 +81,33 @@ class CampaignListContainer extends React.Component {
     if (item.blockByAdmin || item.nopes >= 10) {
       await this.activateClicked(item.id);
     } else {
+      if (item.whitelistedByAdmin) {
+        alert("Whitelisted phone number can't be blacklisted.");
+        return;
+      }
       await this.deactivateClicked(item.id);
+    }
+  };
+
+  async deactivateWhiteListedClicked(id) {
+    if (window.confirm("Do you want to remove whitelist this phone number?")) {
+      await CampaignController.deactivateWhiteList(id);
+      await this.reload();
+    }
+  }
+
+  async activateWhiteListedClicked(id) {
+    if (window.confirm("Do you want to set whitelist this phone number?")) {
+      await CampaignController.activateWhiteList(id);
+      await this.reload();
+    }
+  }
+
+  handleWhtelistActiveChange = async item => {
+    if (item.whitelistedByAdmin) {
+      await this.deactivateWhiteListedClicked(item.id);
+    } else {
+      await this.activateWhiteListedClicked(item.id);
     }
   };
 
@@ -134,6 +160,13 @@ class CampaignListContainer extends React.Component {
               <Switch
                 onChange={() => this.handleActiveChange(item)}
                 checked={item.nopes >= 10 || item.blockByAdmin ? true : false}
+                id="normal-switch"
+              />
+            </td>
+            <td>
+              <Switch
+                onChange={() => this.handleWhtelistActiveChange(item)}
+                checked={item.whitelistedByAdmin}
                 id="normal-switch"
               />
             </td>

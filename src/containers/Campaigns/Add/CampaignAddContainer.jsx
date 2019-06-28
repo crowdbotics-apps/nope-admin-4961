@@ -20,6 +20,7 @@ class CampaignAddContainer extends React.Component {
       yeps: 0,
       nopes: 0,
       blockByAdmin: true,
+      whitelistedByAdmin: false,
       existPhones: []
     };
   }
@@ -40,7 +41,18 @@ class CampaignAddContainer extends React.Component {
   }
 
   handleActiveChange = value => {
+    if (this.state.whitelistedByAdmin && value) {
+      alert("Whitelisted number can't be blacklisted");
+      return;
+    }
     this.setState({ blockByAdmin: value });
+  };
+
+  handleWhiteActiveChange = value => {
+    this.setState({ whitelistedByAdmin: value });
+    if (value) {
+      this.setState({ blockByAdmin: false });
+    }
   };
 
   addClicked = async () => {
@@ -135,6 +147,18 @@ class CampaignAddContainer extends React.Component {
                   <Switch
                     onChange={this.handleActiveChange}
                     checked={this.state.blockByAdmin}
+                    id="normal-switch"
+                  />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div className={styles.inputItem}>
+                  <span>Whitelisted</span>
+                  <Switch
+                    onChange={this.handleWhiteActiveChange}
+                    checked={this.state.whitelistedByAdmin}
                     id="normal-switch"
                   />
                 </div>

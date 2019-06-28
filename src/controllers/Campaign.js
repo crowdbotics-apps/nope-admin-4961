@@ -13,6 +13,7 @@ export const addCampaign = async payload => {
       yeps: payload.yeps,
       nopes: payload.nopes,
       blockByAdmin: payload.blockByAdmin,
+      whitelistedByAdmin: payload.whitelistedByAdmin,
       blocks: []
     };
 
@@ -47,16 +48,18 @@ export const getCampaigns = async () => {
 };
 
 export const deactivateCampaign = async campaignId => {
-  // let newblocks = [];
-  // for (let i = 0; i < 10; i++) {
-  //   newblocks.push({
-  //     reporter_id: "admin",
-  //     date: new Date()
-  //   });
-  // }
+  let newblocks = [];
+  for (let i = 0; i < 10; i++) {
+    newblocks.push({
+      reporter_id: "admin",
+      date: new Date()
+    });
+  }
   try {
     await collection.doc(campaignId).update({
-      blockByAdmin: true
+      blockByAdmin: true,
+      blocks: newblocks,
+      nopes: 10
     });
   } catch (error) {
     throw error;
@@ -66,8 +69,32 @@ export const deactivateCampaign = async campaignId => {
 export const activateCampaign = async campaignId => {
   try {
     await collection.doc(campaignId).update({
-      nopes: 0,
-      blockByAdmin: false
+      blockByAdmin: false,
+      blocks: [],
+      nopes: 0
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deactivateWhiteList = async campaignId => {
+  try {
+    await collection.doc(campaignId).update({
+      whitelistedByAdmin: false
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const activateWhiteList = async campaignId => {
+  try {
+    await collection.doc(campaignId).update({
+      whitelistedByAdmin: true,
+      blockByAdmin: false,
+      blocks: [],
+      nopes: 0
     });
   } catch (error) {
     throw error;
