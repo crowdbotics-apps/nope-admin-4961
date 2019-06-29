@@ -111,6 +111,10 @@ class CampaignListContainer extends React.Component {
     }
   };
 
+  handlePageChange(pageNumber) {
+    this.setState({ activePage: pageNumber });
+  }
+
   searchInputChanged = e => {
     this.setState(
       {

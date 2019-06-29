@@ -95,6 +95,7 @@ class CampaignAddContainer extends React.Component {
                 <div className={styles.inputItem}>
                   <span>Phone Number</span>
                   <PhoneInput
+                    country="US"
                     placeholder="Enter phone number"
                     value={this.state.phone}
                     style={{ width: "100%", paddingLeft: 40 }}
